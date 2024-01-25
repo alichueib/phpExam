@@ -1,0 +1,88 @@
+
+--1:
+CREATE TABLE Planets(
+    P_ID INT AUTO_INCREMENT PRIMARY KEY,
+    P_Name VARCHAR(25) NOT NULL,
+    P_WEIGHT INT NOT NULL,
+    P_discoveryDate Date NOT NULL
+);
+
+CREATE TABLE Moons(
+    M_ID INT AUTO_INCREMENT,
+    M_Name CHAR(9) NOT NULL,
+    M_Radius NUMERIC(11,2) NOT NULL,
+    Planet_ID INT NOT NULL,
+    FOREIGN KEY(Planet_ID) REFERENCES Planets(P_ID),
+    PRIMARY KEY (M_ID)
+);
+
+--1.1 Helper Queries to help me verify results
+-- Inserting Neptune
+INSERT INTO Planets (P_Name, P_WEIGHT, P_discoveryDate) VALUES ('Neptune', 102, '1846-09-23');
+
+-- Inserting moons for Neptune
+INSERT INTO Moons (M_Name, M_Radius, Planet_ID) VALUES ('Triton', 1353.4, 1);
+INSERT INTO Moons (M_Name, M_Radius, Planet_ID) VALUES ('Proteus', 210, 1);
+-- Add more moons for Neptune as needed
+
+-- Inserting Uranus
+INSERT INTO Planets (P_Name, P_WEIGHT, P_discoveryDate) VALUES ('Uranus', 86, '1781-03-13');
+
+-- Inserting moons for Uranus
+INSERT INTO Moons (M_Name, M_Radius, Planet_ID) VALUES ('Titania', 788.9, 2);
+INSERT INTO Moons (M_Name, M_Radius, Planet_ID) VALUES ('Oberon', 761.4, 2);
+-- Add more moons for Uranus as needed
+
+-- Inserting Saturn
+INSERT INTO Planets (P_Name, P_WEIGHT, P_discoveryDate) VALUES ('Saturn', 568, '1610-07-01');
+
+-- Inserting moons for Saturn
+INSERT INTO Moons (M_Name, M_Radius, Planet_ID) VALUES ('Titan', 2575.5, 3);
+INSERT INTO Moons (M_Name, M_Radius, Planet_ID) VALUES ('Rhea', 763.5, 3);
+-- Add more moons for Saturn as needed
+
+--2:
+SELECT P_Name
+FROM planets
+WHERE DATEDIFF(P_discoveryDate, '2005-01-01') < 0;
+
+--3:
+SELECT P.P_ID,P.P_Name
+FROM  planets P
+WHERE P.P_WEIGHT > 1
+AND P.P_ID IN(
+	SELECT P_ID
+    FROM moons M, planets P
+    WHERE M.Planet_ID=P.P_ID
+    GROUP BY P.P_ID
+    HAVING COUNT(P.P_ID) >=4
+)
+
+--4:
+SELECT P.P_Name, m.M_Name
+FROM moons M, planets p
+WHERE M.Planet_ID=P.P_ID
+AND P.P_Name IN ('Neptune','Uranus');
+
+--5:
+SELECT P.P_Name, M.M_Name
+FROM moons M, planets P
+WHERE M.Planet_ID=P.P_ID
+and M.M_ID in (
+            SELECT M.M_ID
+            FROM moons M, planets P
+            WHERE M.Planet_ID=P.P_ID
+            GROUP by P.P_ID
+            having MAX(M.M_Radius)
+)
+
+
+--6:
+SELECT P.P_Name, count(m.M_ID)
+FROM moons M, planets P
+WHERE M.Planet_ID=P.P_ID
+AND P.P_Name LIKE '%a%'
+AND M.M_Radius > 1000
+group by p.P_Name
+
+
