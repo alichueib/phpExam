@@ -1,7 +1,7 @@
 <?php
 
-$dsn="mysql:host=localhost;dbname=phpexam";
-$dbusername="public";
+$dsn='mysql:host=localhost;dbname=phpexam';
+$dbusername='alichueib';
 $dbpwd='password123';
 
 try{

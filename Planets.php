@@ -11,8 +11,9 @@ echo '<h1>Planets</h1>';
 
 require_once 'connect.php';
 
-$query='SELECT P.P_ID,P.P_Name,P.discoveryDate
-        FROM Plantes P';
+$query='SELECT P.P_ID,P.P_Name,P.P_discoveryDate
+        FROM planets  P';
+
 $stmt=$pdo->prepare($query);
 $stmt->execute();
 $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -21,7 +22,7 @@ if(!$result){
 }else{
     ?>
     <p>The planets of the solar system ordered by their discovery dates are:</p>
-    <table>
+    <table border="2">
         <tr>
             <td>Planet Name</td>
             <td>Discovery Date</td>
@@ -40,19 +41,19 @@ if(!$result){
                 <?php print $row['P_discoveryDate'] ?>
             </td>
             <?php
-            if($_SESSION['counter']=3){
+            if($_SESSION['counter']>=3){
                 ?>
             <td>
-                <a href="moons.php?pid=<?php print $row['P_ID']?>&log=0">
-                    Click to Show
+                <a href="moons.php?pid=<?php print $row['P_ID']?>&pname=<?php print $row['P_Name']?>&log=0">
+                    Click to Show 
                 </a>
             </td>
             <?php
             }else{
             ?>
             <td>
-                <a href="moons.php?pid=<?php print $row['P_ID']?>&log=1">
-                    Click to Show
+                <a href="moons.php?pid=<?php print $row['P_ID']?>&pname=<?php print $row['P_Name']?>&log=1">
+                    Click to Show 
                 </a>
             </td>
             <?php
@@ -61,6 +62,7 @@ if(!$result){
         <?php
     }
     echo '</table><br>
-          <a href="changeRadius.php">Change Radius</a>
+          <a href="changeRadius.php">Change Radius</a><br>
+          <a href="logout.php" style="color:red">Logout</a> 
         ';
 }
